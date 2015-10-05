@@ -1,33 +1,45 @@
 import {Component, PropTypes} from 'react'
+import {map} from 'ramda'
+import Radium, {Style} from 'radium'
 
+import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
+
+@Radium
 export default class Comics extends Component {
-  static propTypes = {
-    comics: PropTypes.array.isRequired
-  }
+
   render() {
-    let comics = this.props
+    let {comics} = this.props
+    let renderComics = map(comic => <ComicItem key={comic.id} comic={comic}/>)
     return (
-      <h1> Comics </h1>
-      <section>
-        {comics.map(comic => <ComicItem comic={comic}/>)}
-      </section>
+      <div style={[grid, gutters]}>
+        {renderComics(comics)}
+      </div>
     )
   }
 }
 
+@Radium
 class ComicItem extends Component {
-  static propTypes = {
-    comic: PropTypes.object.isRequired
-  }
 
   render() {
-    let {title, coverImage, description} = comic
+    let {title, coverImage, description} = this.props.comic
     return (
-      <div>
-        <img src={coverImage}/>
+      <div style={[cell, cellGutters, u1of6]}>
+        <img style={[styles.comic.img]} src={coverImage}/>
         <h3>{title}</h3>
         <p>{description}</p>
       </div>
     )
+  }
+}
+
+let styles = {
+  comics: {
+
+  },
+  comic: {
+    img: {
+      width: '100%'
+    }
   }
 }
