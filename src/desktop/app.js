@@ -9,8 +9,9 @@ app.on('window-all-closed', evt => {
 })
 
 app.on('ready', evt => {
-  mainWindow = new BrowserWindow({width: 800, height: 600})
-  mainWindow.loadUrl(`file://${__dirname}/index.html`)
+  let index = `file://${__dirname}/www/index.html`
+  mainWindow = new BrowserWindow({width: 1280, height: 720, center: true})
+  mainWindow.loadUrl(index)
   mainWindow.openDevTools()
   mainWindow.on('closed', evt => mainWindow = null)
 })

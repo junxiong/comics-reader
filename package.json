@@ -2,9 +2,10 @@
   "name": "comics-reader-server",
   "version": "1.0.0",
   "description": "Comics reader server application",
-  "main": "src/index.js",
+  "main": "src/desktop/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "desktop": "electron .",
     "test": "mocha test/**/*.spec.js"
   },
   "repository": {
@@ -24,6 +25,10 @@
     "cheerio": "^0.19.0",
     "electron-prebuilt": "^0.33.5",
     "isomorphic-fetch": "^2.1.1",
-    "ramda": "^0.17.1"
+    "ramda": "^0.17.1",
+    "react": "^0.14.0-rc1",
+    "react-dom": "^0.14.0-rc1",
+    "react-redux": "^3.1.0",
+    "redux": "^3.0.2"
   }
 }
