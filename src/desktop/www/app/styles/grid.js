@@ -1,7 +1,7 @@
 export default {
   grid: {
     display: 'flex',
-    flexWrap: 'nowwrap',
+    flexWrap: 'nowrap',
   	margin: 0,
   	padding: 0
   },
@@ -13,7 +13,7 @@ export default {
     margin: '-1em 0 0 -1em'
   },
   cellGutters: {
-    padding: '1em 0 0 1em'
+    padding: '1em 1em 0 1em'
   },
   // Modifiers with alignment per row
   top: {

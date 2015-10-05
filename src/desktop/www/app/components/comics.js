@@ -24,7 +24,7 @@ class ComicItem extends Component {
   render() {
     let {title, coverImage, description} = this.props.comic
     return (
-      <div style={[cell, cellGutters, u1of6]}>
+      <div style={[styles.comic.item, cell, cellGutters, u1of6]}>
         <img style={[styles.comic.img]} src={coverImage}/>
         <h3>{title}</h3>
         <p>{description}</p>
@@ -38,6 +38,11 @@ let styles = {
 
   },
   comic: {
+    item: {
+      ':hover': {
+        boxShadow: 'inset 0 0 1em gold, 0 0 1em red'
+      }
+    },
     img: {
       width: '100%'
     }
