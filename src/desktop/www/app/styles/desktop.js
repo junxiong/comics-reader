@@ -1,5 +1,6 @@
 export default {
+  Spacing: 64,
   spacing: {
-    padding: 10
+    padding: 20
   }
 }

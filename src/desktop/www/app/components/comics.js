@@ -1,5 +1,5 @@
 import {Component, PropTypes} from 'react'
-import {map} from 'ramda'
+import {map, isEmpty} from 'ramda'
 import Radium, {Style} from 'radium'
 
 import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
@@ -10,9 +10,15 @@ export default class Comics extends Component {
   render() {
     let {comics} = this.props
     let renderComics = map(comic => <ComicItem key={comic.id} comic={comic}/>)
+    let isComicsEmpty = isEmpty(comics)
     return (
       <div style={[grid, gutters]}>
-        {renderComics(comics)}
+        {isComicsEmpty &&
+          <div style={[cell, cellGutters, u1of6]}> 书架是空的 </div>
+        }
+        {!isComicsEmpty &&
+          renderComics(comics)
+        }
       </div>
     )
   }

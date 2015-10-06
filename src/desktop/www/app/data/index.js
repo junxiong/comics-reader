@@ -1,4 +1,4 @@
-let comics = [
+export const comics = [
   {
     id: 9924076,
     title: '血族',
@@ -19,4 +19,18 @@ let comics = [
   }
 ]
 
-export default {comics}
+export function searchComics(query) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(comics), 500)
+  })
+}
+
+export function fetchComic(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let comic = find(propEq('id', id), comics)
+      if (isNil(comic)) reject(new Error('Comic not found'))
+      else resolve(comic)
+    }, 300)
+  })
+}
