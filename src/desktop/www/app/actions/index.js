@@ -1,6 +1,7 @@
 import {merge, append, fileter, propEq} from 'ramda'
 
 import * as store from '../data'
+import {searchComic} from '../../../../comic'
 
 export const PUSH_STATE = 'PUSH_STATE'
 export function pushState(route) {
@@ -65,7 +66,7 @@ export function searchComics(query) {
   let action = {query}
   return dispatch => {
     dispatch(merge(action, {isSearching: true, type: SEARCH_COMICS_REQUEST}))
-    return store.searchComics(query)
+    return searchComic(query)
       .then(data => dispatch(merge(action, {data, isSearching: false, type: SEARCH_COMICS_SUCCESS})))
       .catch(error => dispatch(merge(action, {isSearching: false, type: SEARCH_COMICS_FAILURE})))
   }

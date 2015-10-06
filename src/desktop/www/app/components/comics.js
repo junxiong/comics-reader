@@ -1,5 +1,5 @@
 import {Component, PropTypes} from 'react'
-import {map, isEmpty} from 'ramda'
+import {compose, map, isEmpty, splitEvery} from 'ramda'
 import Radium, {Style} from 'radium'
 
 import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
@@ -8,19 +8,37 @@ import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
 export default class Comics extends Component {
 
   render() {
+    let seq = new Seq()
     let {comics} = this.props
-    let renderComics = map(comic => <ComicItem key={comic.id} comic={comic}/>)
+    let renderComic = comic => <ComicItem key={comic.id} comic={comic}/>
+    let rendComics = compose(
+      map(comics => (
+        <div key={seq.next()} style={[grid, gutters]}>
+          {map(renderComic, comics)}
+        </div>
+      )),
+      splitEvery(6),
+    )
     let isComicsEmpty = isEmpty(comics)
     return (
-      <div style={[grid, gutters]}>
+      <div>
         {isComicsEmpty &&
-          <div style={[cell, cellGutters, u1of6]}> 书架是空的 </div>
+          <div> </div>
         }
         {!isComicsEmpty &&
-          renderComics(comics)
+          rendComics(comics)
         }
       </div>
     )
+  }
+}
+
+class Seq {
+  i = 0
+
+  next() {
+    this.i = this.i + 1
+    return this.i
   }
 }
 

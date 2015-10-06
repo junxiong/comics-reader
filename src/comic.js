@@ -1,11 +1,33 @@
 import fs from 'fs'
 import cheerio from 'cheerio'
 import fetch from 'isomorphic-fetch'
-import {split, head, map, compose, match, take} from 'ramda'
+import {split, head, map, compose, match, take, nth, isEmpty} from 'ramda'
+import urlencode from 'urlencode'
 
 import decode from './decode'
 
 const rootUrl = 'http://www.99comic.com'
+const searchUrl = 'http://so.99comic.com'
+
+export function searchComic(name) {
+  let query = isEmpty(name) ? '' : `/?key=${urlencode(name, 'gbk')}`
+  return fetch(searchUrl + query)
+    .then(res => res.text())
+    .then(html => {
+      let toComics = map(div => {
+        let el = div.children().first()
+        let title = el.text()
+        let coverImage = el.children().first().attr('src')
+        let code = nth(1, /(\d+)$/.exec(el.attr('href')))
+        let id = code
+        return {id, code, title, coverImage}
+      })
+      let $ = cheerio.load(html)
+      let comicDivs = []
+      $('#rightmain2 div.dSHtm div').each((i, e) => comicDivs.push($(e)))
+      return toComics(comicDivs)
+    })
+}
 
 /**
   Fetch information of a comic book
@@ -21,7 +43,7 @@ const rootUrl = 'http://www.99comic.com'
   }
 
 */
-function fetchComic(book) {
+export function fetchComic(book) {
   let bookPath = `/comic/${book}`
   return fetch(rootUrl + bookPath)
     .then(res => res.text())
@@ -67,5 +89,3 @@ function fetchVolum(volUrl) {
       }
     })
 }
-
-export default fetchComic

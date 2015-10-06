@@ -20,7 +20,7 @@ import {grid, center, cell, gutters, cellGutters, u1of3, u1of6} from '../styles/
 export default class ComicsLibrary extends Component {
 
   componentWillMount() {
-    this.props.dispatch(searchComics(''))
+    this.props.dispatch(searchComics('血族'))
   }
 
   render() {
