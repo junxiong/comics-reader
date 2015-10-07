@@ -10,10 +10,10 @@ export default {
   },
   // Modifiers with gutters
   gutters: {
-    margin: '-1em 0 0 -1em'
+    margin: '-1px 0 0 -1px'
   },
   cellGutters: {
-    padding: '1em 1em 0 1em'
+    padding: '1px 1px 1px 1px'
   },
   // Modifiers with alignment per row
   top: {
