@@ -1,7 +1,7 @@
-import {merge, append, fileter, propEq} from 'ramda'
+import {merge, append, fileter, propEq, isNil, find, findIndex} from 'ramda'
 
 import * as store from '../data'
-import {searchComic} from '../../../../comic'
+import * as remote from '../../../../comic'
 
 export const PUSH_STATE = 'PUSH_STATE'
 export function pushState(route) {
@@ -66,21 +66,63 @@ export function searchComics(query) {
   let action = {query}
   return dispatch => {
     dispatch(merge(action, {isSearching: true, type: SEARCH_COMICS_REQUEST}))
-    return searchComic(query)
+    return remote.searchComic(query)
       .then(data => dispatch(merge(action, {data, isSearching: false, type: SEARCH_COMICS_SUCCESS})))
       .catch(error => dispatch(merge(action, {isSearching: false, type: SEARCH_COMICS_FAILURE})))
+  }
+}
+
+
+export const READING_SUCCESS = 'READING_SUCCESS'
+export const READING_FAILURE = 'READING_FAILURE'
+export function read(screenNo) {
+  let action = {type: READING_SUCCESS}
+  return (dispatch, getState) => {
+    let {comic, reading} = getState()
+    let {partNo, volumnNo} = reading
+    let {volumns} = comic.data
+    let volumnsInPart = volumns[partNo][1]
+    let {screens} = volumnsInPart[volumnNo]
+    let data = {partNo, volumnNo, screenNo}
+    let nextVolumnNo = volumnNo + 1
+    let nextPartNo = partNo + 1
+    if (screenNo > 0 || screenNo < screens.length) return dispatch(merge(action, {data}))
+    else if (nextVolumnNo < volumnsInPart.length) return dispatch(merge(action, {data}, {volumnNo: nextVolumnNo, screenNo: 0}))
+    else if (nextPartNo < volumns.length) return dispatch(merge(action, {data}, {partNo: nextPartNo, volumnNo: 0, screenNo: 0}))
+    else return dispatch(merge(action, {type: READING_FAILURE}))
+  }
+}
+
+export function readNext() {
+  return (dispatch, getState) => {
+    let {screenNo} = getState().reading
+    return dispatch(read(screenNo + 1))
+  }
+}
+
+export function readPrevious() {
+  return (dispatch, getState) => {
+    let {screenNo} = getState().reading
+    return dispatch(read(screenNo - 1))
   }
 }
 
 export const FETCH_COMIC_REQUEST = 'FETCH_COMIC_REQUEST'
 export const FETCH_COMIC_SUCCESS = 'FETCH_COMIC_SUCCESS'
 export const FETCH_COMIC_FAILURE = 'FETCH_COMIC_FAILURE'
-export function fetchComic(id) {
-  let action = {id}
+export function fetchComic(request) {
+  let {id, code} = request
+  let action = {request}
   return dispatch => {
-    dipatch(merge(action, {isFetching: true, type: FETCH_COMIC_REQUEST}))
-    return store.fetchComic(id)
-      .then(data => dispatch(merge(action, {data, isFetching: false, type: FETCH_COMIC_SUCCESS})))
-      .catch(error => dispatch(merge(action, {isFetching: false, type: FETCH_COMIC_FAILURE})))
+    dispatch(merge(action, {isFetching: true, type: FETCH_COMIC_REQUEST}))
+    if(isNil(id)) {
+      return remote.fetchComic(code)
+        .then(data => dispatch(merge(action, {data, isFetching: false, type: FETCH_COMIC_SUCCESS})))
+        .catch(error => dispatch(merge(action, {isFetching: false, type: FETCH_COMIC_FAILURE})))
+    } else {
+      return remote.fetchComic(code)
+        .then(data => dispatch(merge(action, {data, isFetching: false, type: FETCH_COMIC_SUCCESS})))
+        .catch(error => dispatch(merge(action, {isFetching: false, type: FETCH_COMIC_FAILURE})))
+    }
   }
 }

@@ -5,5 +5,5 @@ searchComic('血族')
   .catch(error => console.log(error.message))
 
 fetchComic('9924078')
-  .then(book => console.log(book))
+  .then(book => console.log(JSON.stringify(book)))
   .catch('error', error => console.log(error))

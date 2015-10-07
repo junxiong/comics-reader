@@ -1,8 +1,9 @@
 import {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import Radium from 'radium'
+import {isNil} from 'ramda'
 
-import {pushState} from '../actions'
+import {pushState, fetchComic} from '../actions'
 import Header from '../components/header'
 import Bookshelf from './book-shelf'
 import Booklibrary from './book-library'
@@ -21,9 +22,9 @@ export default class Main extends Component {
   render() {
     let {route, dispatch} = this.props
     let handleItemClick = route => dispatch(pushState(route))
-    let handleReadComic = ({id, code}) => {
-      console.log(id, code)
+    let handleReadComic = (comic) => {
       dispatch(pushState('nowreading'))
+      dispatch(fetchComic(comic))
     }
     return (
       <div>

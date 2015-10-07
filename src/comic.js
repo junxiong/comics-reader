@@ -1,7 +1,7 @@
 import fs from 'fs'
 import cheerio from 'cheerio'
 import fetch from 'isomorphic-fetch'
-import {split, head, map, compose, match, take, nth, isEmpty} from 'ramda'
+import {split, head, map, compose, match, take, nth, isEmpty, groupBy, prop, toPairs, reverse} from 'ramda'
 import urlencode from 'urlencode'
 
 import decode from './decode'
@@ -43,25 +43,41 @@ export function searchComic(name) {
   }
 
 */
-export function fetchComic(book) {
-  let bookPath = `/comic/${book}`
+export function fetchComic(code) {
+  let bookPath = `/comic/${code}`
   return fetch(rootUrl + bookPath)
     .then(res => res.text())
     .then(text => {
       let $ = cheerio.load(text)
       let [title, _] = split(' ', $('title').text())
+      let coverImage = $('div.replc img').attr('src')
+      let brief = $('div.replo').text()
+      let description = $('div.replv').text()
       let volUrls = []
       $('.vol .bl li a[target=_blank]').each((i, e) => {
         let volUrl = rootUrl + $(e).attr('href')
         volUrls.push(volUrl)
       })
       // Fetch all comic info asynchronizly
-      return Promise.all(
-        map(volUrl => fetchVolum(volUrl))(volUrls)
-      ).then(volumns => ({
-        title,
-        volumns
-      }))
+      return Promise.all(map(volUrl => fetchVolum(volUrl))(volUrls))
+        .then(volumns => {
+          let groupByPart = compose(
+            map(([n, v]) => [n, reverse(v)]), // Reverse volumns in each part
+            reverse, // Reverse part
+            toPairs,
+            groupBy(prop('part'))
+          )
+          return groupByPart(volumns)
+        })
+        .then(volumns => ({
+          id: null,
+          code,
+          title,
+          brief,
+          description,
+          coverImage,
+          volumns
+        }))
     })
 }
 
@@ -74,7 +90,7 @@ function fetchVolum(volUrl) {
     .then(html => {
       let $ = cheerio.load(html)
       let [part, title] = take(2, split(' ', $('title').text()))
-      let images = compose(
+      let screens = compose(
         map(path => cdnUrl + path),
         split('|'),
         text => decode(text, 'zhangxoewrm'),
@@ -85,7 +101,7 @@ function fetchVolum(volUrl) {
       return {
         part,
         title,
-        images
+        screens
       }
     })
 }

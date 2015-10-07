@@ -24,14 +24,16 @@
   }
 
   type Comic {
-    id: String,
-    data: ComicType
+    request: {String, String},
+    isFetching: String,
+    data: ComicType,
+    volumn: Volumn
   }
 
   type Volumn {
-    index: Int,
-    screen: Int,
-    data: VolumnType
+    partNo: Int,
+    volumnNo: Int,
+    screenNo: Int
   }
 */
 import {merge} from 'ramda'
@@ -39,6 +41,8 @@ import {combineReducers} from 'redux'
 
 import {
   PUSH_STATE,
+  READING_SUCCESS,
+  READING_FAILURE,
   LOAD_BOOK_SHELF_REQUEST,
   LOAD_BOOK_SHELF_SUCCESS,
   LOAD_BOOK_SHELF_FAILURE,
@@ -89,20 +93,36 @@ export function library(state = {
 }
 
 export function comic(state = {
-  id: '',
+  request: null,
   isFetching: false,
   data: null
 }, action) {
-  let {type, id, data} = action
+  let {type, request, data} = action
   switch(type) {
     case FETCH_COMIC_REQUEST:
-      return merge(state, {id, isFetching: true})
+      return merge(state, {request, isFetching: true})
     case FETCH_COMIC_SUCCESS:
-      return merge(state, {id, data, isFetching: false})
+      return merge(state, {request, data, isFetching: false})
     case FETCH_COMIC_FAILURE:
-      return merge(state, {id, isFetching: false})
+      return merge(state, {request, isFetching: false})
     default: return state
   }
 }
 
-export default combineReducers({route, bookshelf, library, comic})
+export function reading(state = {
+  partNo: 0,
+  volumnNo: 0,
+  screenNo: 0
+}, action) {
+  let {data, type} = action
+  switch (type) {
+    case READING_SUCCESS:
+      return merge(state, data)
+    case READING_FAILURE:
+      return state
+    default: return state
+
+  }
+}
+
+export default combineReducers({route, bookshelf, library, comic, reading})
