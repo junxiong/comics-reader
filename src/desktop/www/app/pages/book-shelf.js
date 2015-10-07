@@ -23,11 +23,11 @@ export default class ComicsShelf extends Component {
   }
 
   render() {
-    let {comics, isFetching, query} = this.props
+    let {comics, isFetching, query, onReadingComic} = this.props
     return (
       <div style={[grid, gutters]}>
         <div style={[cell, cellGutters]}>
-          <Comics comics={comics}/>
+          <Comics comics={comics} onReadingComic={onReadingComic}/>
         </div>
         <div style={[cell, cellGutters, u1of6]}>
           <FavoriteComics comics={comics}/>

@@ -24,13 +24,13 @@ export default class ComicsLibrary extends Component {
   }
 
   render() {
-    let {comics, isFetching, query, dispatch} = this.props
+    let {comics, isFetching, query, dispatch, onReadingComic} = this.props
     let onSearch = query => dispatch(searchComics(query))
     return (
       <div>
         <ComicsSearcher query={query} onSearch={onSearch}/>
         <div style={{height: 20}}/>
-        <Comics comics={comics}/>
+        <Comics comics={comics} onReadingComic={onReadingComic}/>
       </div>
     )
   }

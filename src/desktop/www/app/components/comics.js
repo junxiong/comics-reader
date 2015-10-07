@@ -9,8 +9,13 @@ export default class Comics extends Component {
 
   render() {
     let seq = new Seq()
-    let {comics} = this.props
-    let renderComic = comic => <ComicItem key={comic.id} comic={comic}/>
+    let {comics, onReadingComic} = this.props
+    let renderComic = comic => {
+      return <ComicItem
+        key={comic.id || comic.code}
+        comic={comic}
+        onReadingComic={onReadingComic}/>
+    }
     let rendComics = compose(
       map(comics => (
         <div key={seq.next()} style={[grid, gutters]}>
@@ -46,9 +51,13 @@ class Seq {
 class ComicItem extends Component {
 
   render() {
-    let {title, coverImage, description} = this.props.comic
+    let {onReadingComic} = this.props
+    let {id, code, title, coverImage, description} = this.props.comic
+    let c = {id, code}
     return (
-      <div style={[styles.comic.item, cell, cellGutters, u1of6]}>
+      <div
+        onClick={onReadingComic.bind(this, c)}
+        style={[styles.comic.item, cell, cellGutters, u1of6]}>
         <img style={[styles.comic.img]} src={coverImage}/>
         <h3>{title}</h3>
         <p>{description}</p>
