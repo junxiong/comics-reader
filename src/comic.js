@@ -1,7 +1,25 @@
 import fs from 'fs'
 import cheerio from 'cheerio'
 import fetch from 'isomorphic-fetch'
-import {split, head, map, compose, match, take, nth, isEmpty, groupBy, prop, toPairs, reverse} from 'ramda'
+import {
+  split,
+  head,
+  last,
+  map,
+  mapObj,
+  compose,
+  match,
+  take,
+  nth,
+  isEmpty,
+  groupBy,
+  prop,
+  toPairs,
+  fromPairs,
+  reverse,
+  replace,
+  omit,
+} from 'ramda'
 import urlencode from 'urlencode'
 
 import decode from './decode'
@@ -19,8 +37,7 @@ export function searchComic(name) {
         let title = el.text()
         let coverImage = el.children().first().attr('src')
         let code = nth(1, /(\d+)$/.exec(el.attr('href')))
-        let id = code
-        return {id, code, title, coverImage}
+        return {code, title, coverImage}
       })
       let $ = cheerio.load(html)
       let comicDivs = []
@@ -51,8 +68,8 @@ export function fetchComic(code) {
       let $ = cheerio.load(text)
       let [title, _] = split(' ', $('title').text())
       let coverImage = $('div.replc img').attr('src')
-      let brief = $('div.replo').text()
-      let description = $('div.replv').text()
+      let author = last(split('：', $('div.replo').text()))
+      let description = replace(/编辑九九漫画整理/g, '', $('div.replv').text())
       let volUrls = []
       $('.vol .bl li a[target=_blank]').each((i, e) => {
         let volUrl = rootUrl + $(e).attr('href')
@@ -62,21 +79,20 @@ export function fetchComic(code) {
       return Promise.all(map(volUrl => fetchVolum(volUrl))(volUrls))
         .then(volumns => {
           let groupByPart = compose(
-            map(([n, v]) => [n, reverse(v)]), // Reverse volumns in each part
+            map(([t, vs]) => ({title: t, volumns: reverse(map(omit(['part']), vs))})),
             reverse, // Reverse part
             toPairs,
             groupBy(prop('part'))
           )
           return groupByPart(volumns)
         })
-        .then(volumns => ({
-          id: null,
+        .then(parts => ({
           code,
           title,
-          brief,
+          author,
           description,
           coverImage,
-          volumns
+          parts
         }))
     })
 }
