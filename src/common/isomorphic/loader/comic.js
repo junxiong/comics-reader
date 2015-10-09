@@ -1,4 +1,3 @@
-import fs from 'fs'
 import cheerio from 'cheerio'
 import fetch from 'isomorphic-fetch'
 import {

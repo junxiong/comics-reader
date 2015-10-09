@@ -1,6 +1,6 @@
 import {length, head} from 'ramda'
 
-import {fetchComic, searchComic} from './comic'
+import {fetchComic, searchComic} from './common/isomorphic/loader/comic'
 import {Comic, History} from './common/isomorphic/stores'
 
 let findComic = code => Comic.find({code}).then(comics => {
