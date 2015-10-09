@@ -1,3 +1,4 @@
+import path from 'path'
 import app from 'app'
 import BrowserWindow from 'browser-window'
 import CrashReporter from 'crash-reporter'
@@ -10,8 +11,15 @@ app.on('window-all-closed', evt => {
 
 app.on('ready', evt => {
   let index = `file://${__dirname}/www/index.html`
-  mainWindow = new BrowserWindow({width: 1280, height: 720, center: true})
+  mainWindow = new BrowserWindow({
+    icon: path.join(__dirname, 'images/cover.jpg'),
+    width: 1280,
+    height: 720,
+    center: true,
+    resizable: false,
+    'dark-theme': true,
+    'auto-hide-menu-bar': true
+  })
   mainWindow.loadUrl(index)
-  mainWindow.openDevTools()
   mainWindow.on('closed', evt => mainWindow = null)
 })

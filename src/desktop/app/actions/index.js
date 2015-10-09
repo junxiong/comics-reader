@@ -1,7 +1,7 @@
 import {merge, append, fileter, propEq, isNil, find, findIndex} from 'ramda'
 
 import * as store from '../data'
-import * as remote from '../../../../comic'
+import * as remote from '../../../common/isomorphic/loader/comic'
 
 export const PUSH_STATE = 'PUSH_STATE'
 export function pushState(route) {
