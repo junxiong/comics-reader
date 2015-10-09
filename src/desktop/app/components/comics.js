@@ -52,15 +52,15 @@ class ComicItem extends Component {
 
   render() {
     let {onReadingComic} = this.props
-    let {id, code, title, coverImage, description} = this.props.comic
+    let {id, code, title, coverImage, author} = this.props.comic
     let c = {id, code}
     return (
       <div
         onClick={onReadingComic.bind(this, c)}
         style={[styles.comic.item, cell, cellGutters, u1of6]}>
         <img style={[styles.comic.img]} src={coverImage}/>
-        <h3>{title}</h3>
-        <p>{description}</p>
+        <p>{title}</p>
+        <p>{author}</p>
       </div>
     )
   }

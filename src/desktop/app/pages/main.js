@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Radium from 'radium'
 import {isNil} from 'ramda'
 
-import {pushState, fetchComic} from '../actions'
+import {pushState, fetchComic, loadComic} from '../actions'
 import Header from '../components/header'
 import Bookshelf from './book-shelf'
 import Booklibrary from './book-library'
@@ -22,9 +22,11 @@ export default class Main extends Component {
   render() {
     let {route, dispatch} = this.props
     let handleItemClick = route => dispatch(pushState(route))
-    let handleReadComic = (comic) => {
+    let handleReadComic = ({id, code}) => {
+      if (!isNil(id)) dispatch(loadComic(id))
+      else if(!isNil(code)) dispatch(fetchComic(code))
+      else return
       dispatch(pushState('nowreading'))
-      dispatch(fetchComic(comic))
     }
     return (
       <div>

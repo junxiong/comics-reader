@@ -9,7 +9,7 @@ let findComic = code => Comic.find({code}).then(comics => {
 })
 
 Comic.findOne('TdI8iWMbRViFDuvH')
-  .then(comic => console.log(comic))
+  .then(comic => console.log(comic ? comic : 'not found'))
   .catch(error => console.log(error))
 
 searchComic('血族')
@@ -17,5 +17,5 @@ searchComic('血族')
   .catch(error => console.log(error.message))
 
 findComic('9924078')
-  .then(comic => console.log(comic))
+  .then(comic => console.log(comic ? comic : 'not found'))
   .catch(error => console.log(error))

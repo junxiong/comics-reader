@@ -22,12 +22,13 @@ export default class NowReading extends Component {
     if (isFetching) return <div style={[grid, gutters]}> 稍等，正在调出漫画.... </div>
     else if (isNil(this.props.comic)) return <div style={[grid, gutters]}> 找本漫画看看吧 </div>
     else {
-      let {id, code, title, coverImage, description, volumns} = this.props.comic
-      let parts = map(head, volumns)
+      let {id, code, title, coverImage, author, description, parts} = this.props.comic
       let {partNo, volumnNo, screenNo} = this.props.reading
-      let volumnsInPart = volumns[partNo][1]
-      let {screens} = volumnsInPart[volumnNo]
-      let screen = screens[screenNo]
+      let currentPart = nth(partNo, parts)
+      let {volumns} = currentPart
+      let currentVolumn = nth(volumnNo, volumns)
+      let {screens} = currentVolumn
+      let currentScreen = screens[screenNo]
       let nextScreen = () => dispatch(readNext())
       return (
         <div style={[grid, gutters]}>
@@ -36,15 +37,15 @@ export default class NowReading extends Component {
             <h3>{title}</h3>
             <p>{description}</p>
             <ol>
-              {map(part => <li key={part}><p>{part}</p></li>)(parts)}
+              {map(({title}) => <li key={title}><p>{title}</p></li>)(parts)}
             </ol>
           </div>
           <div style={[cell, cellGutters]}>
-            <img style={[styles.comic.img]} src={screen} onClick={nextScreen.bind(this)}/>
+            <img style={[styles.comic.img]} src={currentScreen} onClick={nextScreen.bind(this)}/>
           </div>
           <div style={[cell, cellGutters, u1of6]}>
             <ol>
-              {map(({title}) => <li key={title}>{title}</li>, volumnsInPart)}
+              {map(({title}) => <li key={title}>{title}</li>, volumns)}
             </ol>
           </div>
         </div>

@@ -8,9 +8,9 @@ const DB_PATH = config.development.db
 
 export default function Store(name) {
   let store = new Datastore({
-    filename: path.join(DB_PATH, name),
-    autoload: true
+    filename: path.join(DB_PATH, name)
   })
+  store.loadDatabase(error => console.log(error))
   let fine = doc => {
     let {id} = doc
     if (isNil(id)) return doc
@@ -28,7 +28,7 @@ export default function Store(name) {
       return new Promise((resolve, reject) => {
         store.findOne(query, (error, doc) => {
           if (error) reject(error)
-          else resolve(refine(doc))
+          else resolve(isNil(doc) ? null : refine(doc))
         })
       })
     },
@@ -60,7 +60,7 @@ export default function Store(name) {
           else if (numReplaced === 0) return model
           else store.findOne(query, (error, doc) => {
             if (error) reject(error)
-            else resolve(refine(doc))
+            else resolve(isNil(doc) ? null : refine(doc))
           })
         })
       })

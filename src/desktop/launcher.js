@@ -14,7 +14,7 @@ app.on('ready', evt => {
   mainWindow = new BrowserWindow({
     icon: path.join(__dirname, 'images/cover.jpg'),
     width: 1280,
-    height: 720,
+    height: 960,
     center: true,
     resizable: false,
     'dark-theme': true,
