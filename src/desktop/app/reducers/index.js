@@ -51,7 +51,10 @@ import {
   SEARCH_COMICS_FAILURE,
   FETCH_COMIC_REQUEST,
   FETCH_COMIC_SUCCESS,
-  FETCH_COMIC_FAILURE
+  FETCH_COMIC_FAILURE,
+  LOAD_COMIC_REQUEST,
+  LOAD_COMIC_SUCCESS,
+  LOAD_COMIC_FAILURE
 } from '../actions'
 
 export function route(state='bookshelf', action) {
@@ -93,18 +96,23 @@ export function library(state = {
 }
 
 export function comic(state = {
-  request: null,
   isFetching: false,
   data: null
 }, action) {
-  let {type, request, data} = action
+  let {type, data} = action
   switch(type) {
     case FETCH_COMIC_REQUEST:
-      return merge(state, {request, isFetching: true})
+      return merge(state, {isFetching: true})
     case FETCH_COMIC_SUCCESS:
-      return merge(state, {request, data, isFetching: false})
+      return merge(state, {data, isFetching: false})
     case FETCH_COMIC_FAILURE:
-      return merge(state, {request, isFetching: false})
+      return merge(state, {isFetching: false})
+    case LOAD_COMIC_REQUEST:
+      return merge(state, {isFetching: true})
+    case LOAD_COMIC_SUCCESS:
+      return merge(state, {data, isFetching: false})
+    case LOAD_COMIC_FAILURE:
+      return merge(state, {isFetching: false})
     default: return state
   }
 }
