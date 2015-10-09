@@ -1,6 +1,6 @@
 import Datastore from 'nedb'
 import path from 'path'
-import {map, merge, drop, isNil} from 'ramda'
+import {map, merge, omit, isNil} from 'ramda'
 
 import config from '../../../config'
 
@@ -14,12 +14,12 @@ export default function Store(name) {
   let fine = doc => {
     let {id} = doc
     if (isNil(id)) return doc
-    else return merge(drop('id', doc), {_id: id})
+    else return merge(omit(['id'], doc), {_id: id})
   }
   let refine = doc => {
     let {_id} = doc
     if (isNil(_id)) return doc
-    else return merge(drop('_id', doc), {id: _id})
+    else return merge(omit(['_id'], doc), {id: _id})
   }
 
   return {
