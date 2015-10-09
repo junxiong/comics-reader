@@ -36,17 +36,23 @@ export default class NowReading extends Component {
             <img style={[styles.comic.img]} src={coverImage}/>
             <h3>{title}</h3>
             <p>{description}</p>
-            <ol>
-              {map(({title}) => <li key={title}><p>{title}</p></li>)(parts)}
-            </ol>
+            <div style={[styles.list]}>
+              {map(({title}) => <div
+                style={[styles.listItem,
+                  currentPart.title === title && styles.active]}
+                key={title}><p>{title}</p></div>)(parts)}
+            </div>
           </div>
           <div style={[cell, cellGutters]}>
             <img style={[styles.comic.img]} src={currentScreen} onClick={nextScreen.bind(this)}/>
           </div>
           <div style={[cell, cellGutters, u1of6]}>
-            <ol>
-              {map(({title}) => <li key={title}>{title}</li>, volumns)}
-            </ol>
+            <div style={[styles.list]}>
+              {map(({title}) => <div
+                style={[styles.listItem,
+                  title === currentVolumn.title && styles.active]}
+                key={title}>{title}</div>, volumns)}
+            </div>
           </div>
         </div>
       )
@@ -55,6 +61,17 @@ export default class NowReading extends Component {
 }
 
 let styles = {
+  list: {
+  },
+  listItem: {
+    color: 'white',
+    width: '100%',
+    textAlign: 'center',
+    background: '#00BCD4'
+  },
+  active: {
+    borderBottom: '2px solid red'
+  },
   comics: {
 
   },

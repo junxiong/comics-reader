@@ -49,23 +49,22 @@ export function read(screenNo) {
     let {volumns} = currentPart
     let currentVolumn = volumns[volumnNo]
     let {screens} = currentVolumn
-    let data = {partNo, volumnNo, screenNo}
     if (screenNo >= 0) {
       if (screenNo >= screens.length) {
         let nextVolumnNo = volumnNo + 1
         if (nextVolumnNo >= volumns.length) {
           let nextPartNo = partNo + 1
           if (nextPartNo >= parts.length) return dispatch(merge(action, {type: READING_FAILURE, error: 'Last screen'}))
-          else return dispatch(merge(action, {data}, {partNo: nextPartNo, volumnNo: 0, screenNo: 0}))
-        } else return dispatch(merge(action, {data}, {volumnNo: nextVolumnNo, screenNo: 0})) // to next volumn
-      } else return dispatch(merge(action, {data})) // to target screen
+          else return dispatch(merge(action, {data: {partNo: nextPartNo, volumnNo: 0, screenNo: 0}}))
+        } else return dispatch(merge(action, {data: {partNo, volumnNo: nextVolumnNo, screenNo: 0}})) // to next volumn
+      } else return dispatch(merge(action, {data: {partNo, volumnNo, screenNo}})) // to target screen
     } else {
       let preVolumnNo = volumnNo - 1
       if (preVolumnNo < 0) {
         let prePartNo = partNo - 1
         if (prePartNo < 0) return dispatch(merge(action, {type: READING_FAILURE, error: 'First screen'}))
-        else return dispatch(merge(action, {data}, {partNo: prePartNo, volumnNo: 0, screenNo: 0}))
-      } else return dispatch(merge(action, {data}, {volumnNo: preVolumnNo, screenNo: 0})) // to pre volumn
+        else return dispatch(merge(action, {data: {partNo: prePartNo, volumnNo: 0, screenNo: 0}}))
+      } else return dispatch(merge(action, {data: {partNo, volumnNo: preVolumnNo, screenNo: 0}})) // to pre volumn
     }
   }
 }
