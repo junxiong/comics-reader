@@ -3,7 +3,7 @@ import Radium from 'radium'
 import {compose, isNil, map, head, nth, prop, merge} from 'ramda'
 import {connect} from 'react-redux'
 
-import {readNext} from '../actions'
+import {readNext, readPrevious} from '../actions'
 import Image from '../../../common/web/components/image'
 import {grid, gutters, cell, cellGutters, hcenter, u1of6} from '../styles/grid'
 
@@ -23,8 +23,34 @@ export default class NowReading extends Component {
   }
 
   enterFullscreen() {
-    this.refs.reader.webkitRequestFullscreen()
+    this.refs.reader.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
     this.setState({fullscreen: true})
+  }
+
+  componentDidMount() {
+    console.log('mount')
+    this.handleKeydown.bind(this)
+    document.addEventListener('keydown', this.handleKeydown)
+  }
+
+  componentWillUnmount() {
+    console.log('unmount')
+    document.removeEventListener('keydown', this.handleKeydown)
+  }
+
+  handleKeydown = (evt) => {
+    let {dispatch} = this.props
+    switch(evt.keyCode) {
+      case 37:
+        dispatch(readPrevious())
+        break
+      case 39:
+        dispatch(readNext())
+        break
+      case 27:
+        this.setState({fullscreen: false})
+        break
+    }
   }
 
   render() {
@@ -54,8 +80,10 @@ export default class NowReading extends Component {
                   currentPart.title === title && styles.active]}>{title}</p></div>)(parts)}
             </div>
           </div>
-          <div style={[cell, cellGutters]}>
-            <div ref="reader" style={[grid, hcenter, fullscreen && styles.fullscreenBackground]} onClick={nextScreen.bind(this)}>
+          <div ref="reader"
+            style={[cell, cellGutters, fullscreen && styles.fullscreenBackground]}
+            onClick={nextScreen.bind(this)}>
+            <div style={[grid, hcenter]}>
               <img style={[fullscreen ? styles.comic.fullscreenImg : styles.comic.img]} src={currentScreen}/>
             </div>
           </div>
