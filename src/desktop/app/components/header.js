@@ -43,7 +43,7 @@ let styles = {
   header: {
     color: 'white',
     textAlign: 'center',
-    boxSshadow: '0 2px 5px rgba(0,0,0,0.26)',
+    boxShadow: '0 2px 5px rgba(0,0,0,0.26)',
     left: 0,
     right: 0,
     top: 0,

@@ -31,7 +31,7 @@ export default class Main extends Component {
     return (
       <div>
         <Header route={route} items={items} onItemClick={handleItemClick}/>
-        <div style={[styles.content, spacing]}>
+        <div style={[styles.content]}>
           {route === 'bookshelf' &&
             <Bookshelf onReadingComic={handleReadComic}/>
           }

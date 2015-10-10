@@ -10,13 +10,13 @@ export default class ImageLoader extends Component {
 
   render() {
     let {loaded, failed} = this.state
-    let {src, style, alt} = this.props
+    let {src, style, ...rest} = this.props
     //let failedSrc = `http://place-hold.it/300x400/FF8A65/fff/000&text=${alt}&fontsize=23`
     let loadingSrc = 'images/loading.gif'
     let failedSrc = 'images/failed.gif'
-    if (loaded) return <img style={[style, styles.imageLoaded]} src={src}/>
-    else if (failed) return <img style={[style, styles.imageLoaded]} src={failedSrc}/>
-    else return <img style={[style, styles.image]} src={loadingSrc}/>
+    if (loaded) return <img style={[style, styles.imageLoaded]} src={src} {...rest}/>
+    else if (failed) return <img style={[style, styles.imageLoaded]} src={failedSrc} {...rest}/>
+    else return <img style={[style, styles.image]} src={loadingSrc} {...rest}/>
   }
 
   componentDidMount() {

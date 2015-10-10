@@ -1,9 +1,10 @@
 import {Component} from 'react'
 import Radium from 'radium'
-import {compose, isNil, map, head, nth, prop} from 'ramda'
+import {compose, isNil, map, head, nth, prop, merge} from 'ramda'
 import {connect} from 'react-redux'
 
 import {readNext} from '../actions'
+import Image from '../../../common/web/components/image'
 import {grid, gutters, cell, cellGutters, u1of6} from '../styles/grid'
 
 @connect(
@@ -32,26 +33,26 @@ export default class NowReading extends Component {
       let nextScreen = () => dispatch(readNext())
       return (
         <div style={[grid, gutters]}>
-          <div style={[cell, cellGutters, u1of6]}>
-            <img style={[styles.comic.img]} src={coverImage}/>
+          <div style={[cell, u1of6, cellGutters, styles.sider('L')]}>
+            <Image style={[styles.comic.img]} src={coverImage}/>
             <h3>{title}</h3>
             <p>{description}</p>
             <div style={[styles.list]}>
               {map(({title}) => <div
-                style={[styles.listItem,
-                  currentPart.title === title && styles.active]}
-                key={title}><p>{title}</p></div>)(parts)}
+                style={[styles.listItem]}
+                key={title}><p style={[styles.part,
+                  currentPart.title === title && styles.active]}>{title}</p></div>)(parts)}
             </div>
           </div>
           <div style={[cell, cellGutters]}>
             <img style={[styles.comic.img]} src={currentScreen} onClick={nextScreen.bind(this)}/>
           </div>
-          <div style={[cell, cellGutters, u1of6]}>
+          <div style={[cell, u1of6, cellGutters, styles.sider('R')]}>
             <div style={[styles.list]}>
               {map(({title}) => <div
-                style={[styles.listItem,
-                  title === currentVolumn.title && styles.active]}
-                key={title}>{title}</div>, volumns)}
+                style={[styles.listItem]}
+                key={title}><p style={[styles.volumn,
+                  title === currentVolumn.title && styles.active]}>{title}</p></div>, volumns)}
             </div>
           </div>
         </div>
@@ -61,16 +62,35 @@ export default class NowReading extends Component {
 }
 
 let styles = {
+  sider: direction => {
+    let shadow = {backgroundColor: '#FF5722'}
+    switch(direction) {
+      case 'L':
+        return merge(shadow, {boxShadow: '1px 0px 1px 0px rgba(33,150,243,1)'})
+      case 'R':
+        return merge(shadow, {boxShadow: '-1px 0px 1px 0px rgba(33,150,243,1)'})
+      default: throw 'Not supported'
+    }
+  },
+  part: {
+    backgroundColor: '#BF360C',
+    fontSize: 24,
+    height: 32
+  },
+  volumn: {
+    backgroundColor: '#BF360C',
+    fontSize: 24,
+    height: 32
+  },
   list: {
   },
   listItem: {
     color: 'white',
     width: '100%',
-    textAlign: 'center',
-    background: '#00BCD4'
+    textAlign: 'center'
   },
   active: {
-    borderBottom: '2px solid red'
+    backgroundColor: '#2196F3'
   },
   comics: {
 

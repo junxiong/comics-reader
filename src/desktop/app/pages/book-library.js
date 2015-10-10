@@ -19,10 +19,6 @@ import {grid, center, cell, gutters, cellGutters, u1of3, u1of6} from '../styles/
 @Radium
 export default class ComicsLibrary extends Component {
 
-  componentWillMount() {
-    this.props.dispatch(searchComics('血族'))
-  }
-
   render() {
     let {comics, isFetching, query, dispatch, onReadingComic} = this.props
     let onSearch = query => dispatch(searchComics(query))
