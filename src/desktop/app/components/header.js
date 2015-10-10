@@ -19,7 +19,7 @@ export default class Header extends Component {
           cell,
           u1of6,
           route === item.route && styles.active]}>
-        <h2>{item.label}</h2>
+        <h3>{item.label}</h3>
       </div>
     ))
     return (
@@ -34,7 +34,7 @@ export default class Header extends Component {
 
 let styles = {
   active: {
-    borderBottom: '2px solid red'
+    borderBottom: '2px solid #2196F3'
   },
   item: {
     height: '100%',
@@ -42,11 +42,13 @@ let styles = {
   },
   header: {
     color: 'white',
-    position: 'fixed',
-    top: 0,
-    width: '100%',
-    height: Spacing,
     textAlign: 'center',
-    background: '#00BCD4'
+    boxSshadow: '0 2px 5px rgba(0,0,0,0.26)',
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 1,
+    position: 'fixed',
+    backgroundColor: '#FF5722'
   }
 }

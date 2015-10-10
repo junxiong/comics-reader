@@ -2,6 +2,7 @@ import {Component, PropTypes} from 'react'
 import {compose, map, isEmpty, splitEvery} from 'ramda'
 import Radium, {Style} from 'radium'
 
+import Image from '../../../common/web/components/image'
 import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
 
 @Radium
@@ -58,7 +59,7 @@ class ComicItem extends Component {
       <div
         onClick={onReadingComic.bind(this, c)}
         style={[styles.comic.item, cell, cellGutters, u1of6]}>
-        <img style={[styles.comic.img]} src={coverImage}/>
+        <Image style={[styles.comic.img]} src={coverImage} alt={code}/>
         <p>{title}</p>
         <p>{author}</p>
       </div>

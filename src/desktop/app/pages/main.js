@@ -49,8 +49,8 @@ export default class Main extends Component {
 
 let items = [
   {label: '阅读中', route: 'nowreading'},
-  {label: '漫画架', route: 'bookshelf'},
-  {label: '漫画库', route: 'booklibrary'}
+  {label: '漫画书架', route: 'bookshelf'},
+  {label: '在线漫画库', route: 'booklibrary'}
 ]
 
 let styles = {
