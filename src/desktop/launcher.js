@@ -12,7 +12,7 @@ app.on('window-all-closed', evt => {
 app.on('ready', evt => {
   let index = `file://${__dirname}/www/index.html`
   mainWindow = new BrowserWindow({
-    icon: path.join(__dirname, 'images/cover.jpg'),
+    icon: path.join(__dirname, 'images/cover.png'),
     width: 1280,
     height: 960,
     center: true,
