@@ -22,8 +22,23 @@ export default {
   bottom: {
     alignItems: 'flex-end'
   },
-  center: {
+  vcenter: {
     alignItems: 'center'
+  },
+  start: {
+    justifyContent: 'flex-start'
+  },
+  end: {
+    justifyContent: 'flex-end'
+  },
+  between: {
+    justifyContent: 'space-between'
+  },
+  around: {
+    justifyContent: 'space-around'
+  },
+  hcenter: {
+    justifyContent: 'center'
   },
   // Modifiers with alignment per cell
   cellTop: {

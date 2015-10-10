@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import {readNext} from '../actions'
 import Image from '../../../common/web/components/image'
-import {grid, gutters, cell, cellGutters, u1of6} from '../styles/grid'
+import {grid, gutters, cell, cellGutters, hcenter, u1of6} from '../styles/grid'
 
 @connect(
   state => {
@@ -18,7 +18,17 @@ import {grid, gutters, cell, cellGutters, u1of6} from '../styles/grid'
 @Radium
 export default class NowReading extends Component {
 
+  initialState = {
+    fullscreen: false
+  }
+
+  enterFullscreen() {
+    this.refs.reader.webkitRequestFullscreen()
+    this.setState({fullscreen: true})
+  }
+
   render() {
+    let {fullscreen} = this.state
     let {comic, isFetching, dispatch} = this.props
     if (isFetching) return <div style={[grid, gutters]}> 稍等，正在调出漫画.... </div>
     else if (isNil(this.props.comic)) return <div style={[grid, gutters]}> 找本漫画看看吧 </div>
@@ -45,9 +55,12 @@ export default class NowReading extends Component {
             </div>
           </div>
           <div style={[cell, cellGutters]}>
-            <img style={[styles.comic.img]} src={currentScreen} onClick={nextScreen.bind(this)}/>
+            <div ref="reader" style={[grid, hcenter, fullscreen && styles.fullscreenBackground]} onClick={nextScreen.bind(this)}>
+              <img style={[fullscreen ? styles.comic.fullscreenImg : styles.comic.img]} src={currentScreen}/>
+            </div>
           </div>
           <div style={[cell, u1of6, cellGutters, styles.sider('R')]}>
+            <button onClick={this.enterFullscreen.bind(this)}> full screen </button>
             <div style={[styles.list]}>
               {map(({title}) => <div
                 style={[styles.listItem]}
@@ -59,9 +72,13 @@ export default class NowReading extends Component {
       )
     }
   }
+
 }
 
 let styles = {
+  fullscreenBackground: {
+    backgroundColor: 'black'
+  },
   sider: direction => {
     let shadow = {backgroundColor: '#FF5722'}
     switch(direction) {
@@ -96,6 +113,9 @@ let styles = {
 
   },
   comic: {
+    fullscreenImg: {
+      height: window.screen.height
+    },
     img: {
       width: '100%'
     }
