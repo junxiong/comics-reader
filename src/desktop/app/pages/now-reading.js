@@ -28,13 +28,11 @@ export default class NowReading extends Component {
   }
 
   componentDidMount() {
-    console.log('mount')
     this.handleKeydown.bind(this)
     document.addEventListener('keydown', this.handleKeydown)
   }
 
   componentWillUnmount() {
-    console.log('unmount')
     document.removeEventListener('keydown', this.handleKeydown)
   }
 
@@ -70,14 +68,36 @@ export default class NowReading extends Component {
       return (
         <div style={[grid, gutters]}>
           <div style={[cell, u1of6, cellGutters, styles.sider('L')]}>
-            <Image style={[styles.comic.img]} src={coverImage}/>
             <h3>{title}</h3>
+            <button onClick={this.enterFullscreen.bind(this)}> full screen </button>
+            <Image style={[styles.comic.img]} src={coverImage}/>
             <p>{description}</p>
             <div style={[styles.list]}>
-              {map(({title}) => <div
-                style={[styles.listItem]}
-                key={title}><p style={[styles.part,
-                  currentPart.title === title && styles.active]}>{title}</p></div>)(parts)}
+              {
+                map(p => (
+                  <div
+                    style={[styles.listItem]}
+                    key={p.title}>
+                    <p style={[styles.part,
+                      currentPart.title === p.title && styles.active]}>
+                      {p.title}
+                    </p>
+                    <div style={[styles.list]}>
+                      {
+                        map(v => (
+                          <div
+                            style={[styles.listItem]}
+                            key={v.title}>
+                            <p style={[styles.volumn,
+                              v.title === currentVolumn.title && currentPart.title === p.title && styles.active]}>
+                              {v.title}
+                            </p>
+                          </div>), volumns)
+                        }
+                    </div>
+                  </div>)
+                )(parts)
+              }
             </div>
           </div>
           <div ref="reader"
@@ -85,15 +105,6 @@ export default class NowReading extends Component {
             onClick={nextScreen.bind(this)}>
             <div style={[grid, hcenter]}>
               <img style={[fullscreen ? styles.comic.fullscreenImg : styles.comic.img]} src={currentScreen}/>
-            </div>
-          </div>
-          <div style={[cell, u1of6, cellGutters, styles.sider('R')]}>
-            <button onClick={this.enterFullscreen.bind(this)}> full screen </button>
-            <div style={[styles.list]}>
-              {map(({title}) => <div
-                style={[styles.listItem]}
-                key={title}><p style={[styles.volumn,
-                  title === currentVolumn.title && styles.active]}>{title}</p></div>, volumns)}
             </div>
           </div>
         </div>
@@ -108,7 +119,9 @@ let styles = {
     backgroundColor: 'black'
   },
   sider: direction => {
-    let shadow = {backgroundColor: '#FF5722'}
+    let shadow = {
+      backgroundColor: '#FF5722'
+    }
     switch(direction) {
       case 'L':
         return merge(shadow, {boxShadow: '1px 0px 1px 0px rgba(33,150,243,1)'})
@@ -118,11 +131,13 @@ let styles = {
     }
   },
   part: {
+    parding: 0,
     backgroundColor: '#BF360C',
     fontSize: 24,
     height: 32
   },
   volumn: {
+    padding: 0,
     backgroundColor: '#BF360C',
     fontSize: 24,
     height: 32

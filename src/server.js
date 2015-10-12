@@ -22,10 +22,12 @@
 //   .catch(error => console.log(error))
 
 // Uncoment below to test utils
-import {range} from 'ramda'
+import {map, range, isEmpty, filter, complement} from 'ramda'
 import {matrixfy} from './common/isomorphic/utils'
 
 let items = range(0, 100)
 let matrixfy9 = matrixfy(9)
 
-console.log(matrixfy9(items))
+let notEmpty = filter(complement(isEmpty))
+
+console.log(map(notEmpty, matrixfy9(items)))

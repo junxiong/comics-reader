@@ -1,8 +1,9 @@
 import {Component, PropTypes} from 'react'
-import {compose, map, isEmpty, splitEvery} from 'ramda'
+import {compose, map, isEmpty, filter, complement} from 'ramda'
 import Radium, {Style} from 'radium'
 
 import Image from '../../../common/web/components/image'
+import {matrixfy} from '../../../common/isomorphic/utils'
 import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
 
 @Radium
@@ -17,14 +18,24 @@ export default class Comics extends Component {
         comic={comic}
         onReadingComic={onReadingComic}/>
     }
-    let rendComics = compose(
-      map(comics => (
-        <div key={seq.next()} style={[grid, gutters]}>
-          {map(renderComic, comics)}
-        </div>
-      )),
-      splitEvery(6),
+    let renderColumn = column => (
+      <div key={seq.next()} style={[cell, cellGutters]}>
+        {map(renderComic, column)}
+      </div>
     )
+    let rendComics = comics => {
+      return (
+        <div style={[grid, gutters]}>
+        {compose(
+            map(renderColumn),
+            map(filter(complement(isEmpty))),
+            matrixfy(9),
+          )(comics)
+        }
+        </div>
+      )
+
+    }
     let isComicsEmpty = isEmpty(comics)
     return (
       <div>
@@ -58,7 +69,7 @@ class ComicItem extends Component {
     return (
       <div
         onClick={onReadingComic.bind(this, c)}
-        style={[styles.comic.item, cell, cellGutters, u1of6]}>
+        style={[styles.comic.item]}>
         <Image style={[styles.comic.img]} src={coverImage} alt={code}/>
         <p>{title}</p>
         <p>{author}</p>
