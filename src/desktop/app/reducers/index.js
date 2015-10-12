@@ -41,6 +41,9 @@ import {combineReducers} from 'redux'
 
 import {
   PUSH_STATE,
+  ZOOM_IN,
+  ZOOM_OUT,
+  ZOOM_TO,
   SHOW_SIDER,
   HIDE_SIDER,
   ENTER_FULLSCREEN,
@@ -155,4 +158,16 @@ export function fullscreen(state = false, action) {
   }
 }
 
-export default combineReducers({route, bookshelf, library, comic, reading, sider, fullscreen})
+const MAX_SIZE = 1280
+const MIN_SIZE = 480
+export function zoom(state = MAX_SIZE, action) {
+  let {type, step, size} = action
+  switch(type) {
+    case ZOOM_IN: return Math.min(MAX_SIZE, state + step)
+    case ZOOM_OUT: return Math.max(MIN_SIZE, Math.abs(state - step))
+    case ZOOM_TO: return Math.min(MAX_SIZE, Math.max(MIN_SIZE, size))
+    default: return state
+  }
+}
+
+export default combineReducers({route, bookshelf, library, comic, reading, sider, fullscreen, zoom})

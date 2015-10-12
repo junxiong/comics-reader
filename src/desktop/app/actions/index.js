@@ -11,6 +11,28 @@ export function pushState(route) {
   }
 }
 
+export const ZOOM_IN = 'ZOOM_IN'
+export const ZOOM_OUT = 'ZOOM_OUT'
+export const ZOOM_TO = 'ZOOM_TO'
+export function zoomIn(step) {
+  return {
+    type: ZOOM_IN,
+    step
+  }
+}
+export function zoomOut(step) {
+  return {
+    type: ZOOM_OUT,
+    step
+  }
+}
+export function zoomTo(size) {
+  return {
+    type: ZOOM_TO,
+    size
+  }
+}
+
 export const ENTER_FULLSCREEN = 'ENTER_FULL_SCREEN'
 export const EXIT_FULLSCREEN = 'EXIT_FULL_SCREEN'
 export function enterFullscreen() {
