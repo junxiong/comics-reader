@@ -84,6 +84,7 @@ let styles = {
   },
   comic: {
     item: {
+      borderRadius: 10,
       backgroundColor: '#FF5722',
       ':hover': {
         boxShadow: 'inset 0 0 1em gold, 0 0 1em red'

@@ -158,7 +158,7 @@ export function fullscreen(state = false, action) {
   }
 }
 
-const MAX_SIZE = 1280
+const MAX_SIZE = 1200
 const MIN_SIZE = 480
 export function zoom(state = MAX_SIZE, action) {
   let {type, step, size} = action

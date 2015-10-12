@@ -3,7 +3,7 @@ import Radium from 'radium'
 import {compose, isNil, map, head, nth, prop, merge} from 'ramda'
 import {connect} from 'react-redux'
 
-import {readNext, readPrevious, zoomIn, zoomOut, zoomTo} from '../actions'
+import {readNext, readPrevious, zoomIn, zoomOut, zoomTo, enterFullscreen, exitFullscreen} from '../actions'
 import Image from '../../../common/web/components/image'
 import Sider from '../components/sider'
 import {grid, gutters, cell, cellGutters, hcenter, u1of6} from '../styles/grid'
@@ -14,20 +14,12 @@ import {grid, gutters, cell, cellGutters, hcenter, u1of6} from '../styles/grid'
     let comic = state.comic.data
     let reading = state.reading
     let size = state.zoom
-    return {comic, isFetching, reading, size}
+    let fullscreen = state.fullscreen
+    return {comic, isFetching, reading, size, fullscreen}
   }
 )
 @Radium
 export default class NowReading extends Component {
-
-  initialState = {
-    fullscreen: false
-  }
-
-  enterFullscreen() {
-    this.refs.reader.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
-
-  }
 
   componentDidMount() {
     this.handleKeydown.bind(this)
@@ -39,7 +31,7 @@ export default class NowReading extends Component {
   }
 
   componentDidUpdate() {
-    let {fullscreen} = this.state
+    let {fullscreen} = this.props
     if (fullscreen) this.refs.reader.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
   }
 
@@ -51,7 +43,6 @@ export default class NowReading extends Component {
     const KEY_PLUS = 107
     const KEY_MINUS = 109
     let {dispatch} = this.props
-    console.log(evt)
     switch(evt.keyCode) {
       case KEY_LEFT:
         dispatch(readPrevious())
@@ -60,10 +51,10 @@ export default class NowReading extends Component {
         dispatch(readNext())
         break
       case KEY_ESC:
-        this.setState({fullscreen: false})
+        dispatch(exitFullscreen())
         break
       case KEY_PLUS:
-        if (evt.ctrlKey) this.setState({fullscreen: true})
+        if (evt.ctrlKey) dispatch(enterFullscreen())
         else dispatch(zoomIn(STEP))
         break
       case KEY_MINUS:
@@ -73,8 +64,7 @@ export default class NowReading extends Component {
   }
 
   render() {
-    let {fullscreen} = this.state
-    let {comic, isFetching, dispatch, size} = this.props
+    let {comic, isFetching, dispatch, size, fullscreen} = this.props
     if (isFetching) return <div style={[grid, gutters]}> 稍等，正在调出漫画.... </div>
     else if (isNil(this.props.comic)) return <div style={[grid, gutters]}> 找本漫画看看吧 </div>
     else {
@@ -85,12 +75,10 @@ export default class NowReading extends Component {
       let currentVolumn = nth(volumnNo, volumns)
       let {screens} = currentVolumn
       let currentScreen = screens[screenNo]
-      let nextScreen = () => dispatch(readNext())
       return (
         <div style={[grid, gutters]}>
           <div ref="reader"
-            style={[cell, cellGutters, fullscreen && styles.fullscreenBackground]}
-            onClick={nextScreen.bind(this)}>
+            style={[cell, cellGutters, fullscreen && styles.fullscreenBackground]}>
             <div style={[grid, hcenter]}>
             {fullscreen &&
               <img style={[styles.comic.fullscreenImg]} src={currentScreen}/>
@@ -100,7 +88,6 @@ export default class NowReading extends Component {
                 <img style={[styles.comic.img(size)]} src={currentScreen}/>
               </div>
             }
-
             </div>
           </div>
         </div>
