@@ -1,9 +1,10 @@
 import {Component} from 'react'
 import Radium from 'radium'
-import {map, nth, merge} from 'ramda'
+import {map, nth, merge, flatten, compose, filter, complement, isEmpty} from 'ramda'
 
+import {matrixfy} from '../../../common/isomorphic/utils'
 import Image from '../../../common/web/components/image'
-import {grid, center, cell, gutters, cellGutters, u1of3, u1of6} from '../styles/grid'
+import {grid, center, cell, gutters, cellGutters, u1of3, u1of6, wrap} from '../styles/grid'
 
 @Radium
 export default class Sider extends Component {
@@ -14,39 +15,47 @@ export default class Sider extends Component {
     let currentPart = nth(partNo, parts)
     let {volumns} = currentPart
     let currentVolumn = nth(volumnNo, volumns)
+    let titles = flatten(map(part => map(volumn => {
+      let p = part.title
+      let v = volumn.title
+      return {p, v}
+    }, part.volumns) ,parts))
+    let Seq = () => {
+      let i = 0
+      return () => {
+        i = i + 1
+        return i
+      }
+    }
+    let renderTitle = ({p, v}) => (
+      <div key={p+v} style={[styles.volumn,
+        v === currentVolumn.title && p ===currentPart.title && styles.active]}>
+        <p>{p+v}</p>
+      </div>
+    )
+    let next = Seq()
+    let renderColumn = (column) => (
+      <div key={next()} style={[cell, cellGutters]}>
+        {map(renderTitle, column)}
+      </div>
+    )
     return (
       <div style={[styles.sider('L')]}>
         <div style={[grid]}>
           <div style={[cell]}><h3>{title}</h3></div>
           <div style={[cell, styles.icon]}>{this.props.icon}</div>
         </div>
-        <Image style={[styles.comic.img]} src={coverImage}/>
-        <p>{description}</p>
-        <div style={[styles.list]}>
+        <div style={[grid]}>
+          <div style={[cell, styles.img]}><Image style={[styles.comic.img]} src={coverImage}/></div>
+          <div style={[cell]}><p style={[styles.description]}>{description}</p></div>
+        </div>
+        <div style={[grid, gutters, wrap]}>
           {
-            map(p => (
-              <div
-                style={[styles.listItem]}
-                key={p.title}>
-                <p style={[styles.part,
-                  currentPart.title === p.title && styles.active]}>
-                  {p.title}
-                </p>
-                <div style={[styles.list]}>
-                  {
-                    map(v => (
-                      <div
-                        style={[styles.listItem]}
-                        key={v.title}>
-                        <p style={[styles.volumn,
-                          v.title === currentVolumn.title && currentPart.title === p.title && styles.active]}>
-                          {v.title}
-                        </p>
-                      </div>), volumns)
-                    }
-                </div>
-              </div>)
-            )(parts)
+            compose(
+              map(renderColumn),
+              map(filter(complement(isEmpty))),
+              matrixfy(6),
+            )(titles)
           }
         </div>
       </div>
@@ -55,6 +64,14 @@ export default class Sider extends Component {
 }
 
 let styles = {
+  description: {
+    paddingTop: 0,
+    marginTop: 0
+  },
+  img: {
+    flex: 'none',
+    width: 80
+  },
   icon: {
     width: 50,
     flex: 'none'
@@ -64,6 +81,7 @@ let styles = {
       position: 'fixed',
       left: 0,
       top: 0,
+      height: screen.height,
       paddingTop: 0,
       marginTop: 0,
       zIndex: 999,
@@ -78,23 +96,9 @@ let styles = {
       default: throw 'Not supported'
     }
   },
-  part: {
-    parding: 0,
-    backgroundColor: '#BF360C',
-    fontSize: 24,
-    height: 32
-  },
   volumn: {
-    padding: 0,
-    backgroundColor: '#BF360C',
-    fontSize: 24,
-    height: 32
-  },
-  list: {
-  },
-  listItem: {
-    color: 'white',
-    width: '100%',
+    backgroundColor: '#FF5722',
+    fontSize: 16,
     textAlign: 'center'
   },
   active: {

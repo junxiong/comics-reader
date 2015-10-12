@@ -1,9 +1,11 @@
 export default {
   grid: {
     display: 'flex',
-    flexWrap: 'nowrap',
   	margin: 0,
   	padding: 0
+  },
+  wrap: {
+    flexFlow: 'wrap'
   },
   cell: {
     flex: 1

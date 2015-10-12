@@ -29,7 +29,7 @@ export default class Comics extends Component {
         {compose(
             map(renderColumn),
             map(filter(complement(isEmpty))),
-            matrixfy(9),
+            matrixfy(8),
           )(comics)
         }
         </div>
@@ -84,6 +84,7 @@ let styles = {
   },
   comic: {
     item: {
+      backgroundColor: '#FF5722',
       ':hover': {
         boxShadow: 'inset 0 0 1em gold, 0 0 1em red'
       }
