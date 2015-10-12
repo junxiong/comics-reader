@@ -3,24 +3,31 @@ import {connect} from 'react-redux'
 import Radium from 'radium'
 import {isNil} from 'ramda'
 
-import {pushState, fetchComic, loadComic} from '../actions'
+import {pushState, fetchComic, loadComic, showSider, hideSider} from '../actions'
 import Header from '../components/header'
 import Bookshelf from './book-shelf'
 import Booklibrary from './book-library'
 import NowReading from './now-reading'
 
 import {Spacing, spacing} from '../styles/desktop'
+import Sider from '../components/sider'
+import {grid, gutters, cell, cellGutters, hcenter, u1of6} from '../styles/grid'
 
 @connect(
   state => {
     let {route} = state
-    return {route}
+    let {isFetching} = state.comic
+    let comic = state.comic.data
+    let reading = state.reading
+    let sider = state.sider
+    return {route, comic, isFetching, reading, sider}
   }
 )
 @Radium
 export default class Main extends Component {
+
   render() {
-    let {route, dispatch} = this.props
+    let {route, dispatch, comic, reading, sider} = this.props
     let handleItemClick = route => dispatch(pushState(route))
     let handleReadComic = ({id, code}) => {
       if (!isNil(id)) dispatch(loadComic(id))
@@ -28,19 +35,29 @@ export default class Main extends Component {
       else return
       dispatch(pushState('nowreading'))
     }
+    let handleShowSider = evt => dispatch(showSider())
+    let handleHideSider = evt => dispatch(hideSider())
+    let isReading = route === 'nowreading' && !isNil(comic)
+    let showSiderIcon = isReading ? <img src='images/ic_reorder_white_48dp_1x.png' onClick={handleShowSider.bind(this)}/> : null
+    let hideSiderIcon = <img src='images/ic_reorder_white_48dp_1x.png' onClick={handleHideSider.bind(this)}/>
     return (
       <div>
-        <Header route={route} items={items} onItemClick={handleItemClick}/>
-        <div style={[styles.content]}>
-          {route === 'bookshelf' &&
-            <Bookshelf onReadingComic={handleReadComic}/>
-          }
-          {route === 'booklibrary' &&
-            <Booklibrary onReadingComic={handleReadComic}/>
-          }
-          {route === 'nowreading' &&
-            <NowReading/>
-          }
+        {isReading && sider &&
+          <Sider comic={comic} reading={reading} icon={hideSiderIcon}/>
+        }
+        <div>
+          <Header route={route} items={items} onItemClick={handleItemClick} icon={showSiderIcon}/>
+          <div style={[styles.content]}>
+            {route === 'bookshelf' &&
+              <Bookshelf onReadingComic={handleReadComic}/>
+            }
+            {route === 'booklibrary' &&
+              <Booklibrary onReadingComic={handleReadComic}/>
+            }
+            {route === 'nowreading' &&
+              <NowReading/>
+            }
+          </div>
         </div>
       </div>
     )

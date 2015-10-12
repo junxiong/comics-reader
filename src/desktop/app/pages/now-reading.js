@@ -68,7 +68,6 @@ export default class NowReading extends Component {
       let nextScreen = () => dispatch(readNext())
       return (
         <div style={[grid, gutters]}>
-          <Sider comic={this.props.comic} reading={this.props.reading}/>
           <div ref="reader"
             style={[cell, cellGutters, fullscreen && styles.fullscreenBackground]}
             onClick={nextScreen.bind(this)}>

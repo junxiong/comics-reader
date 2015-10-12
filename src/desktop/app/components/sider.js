@@ -15,8 +15,11 @@ export default class Sider extends Component {
     let {volumns} = currentPart
     let currentVolumn = nth(volumnNo, volumns)
     return (
-      <div style={[cell, u1of6, cellGutters,styles.sider('L')]}>
-        <h3>{title}</h3>
+      <div style={[styles.sider('L')]}>
+        <div style={[grid]}>
+          <div style={[cell]}><h3>{title}</h3></div>
+          <div style={[cell, styles.icon]}>{this.props.icon}</div>
+        </div>
         <Image style={[styles.comic.img]} src={coverImage}/>
         <p>{description}</p>
         <div style={[styles.list]}>
@@ -52,15 +55,26 @@ export default class Sider extends Component {
 }
 
 let styles = {
+  icon: {
+    width: 50,
+    flex: 'none'
+  },
   sider: direction => {
-    let shadow = {
+    let sider = {
+      position: 'fixed',
+      left: 0,
+      top: 0,
+      paddingTop: 0,
+      marginTop: 0,
+      zIndex: 999,
+      width: 800,
       backgroundColor: '#FF5722'
     }
     switch(direction) {
       case 'L':
-        return merge(shadow, {boxShadow: '1px 0px 1px 0px rgba(33,150,243,1)'})
+        return merge(sider, {boxShadow: '2px 0px 5px 0px rgba(0,0,0,0.26)'})
       case 'R':
-        return merge(shadow, {boxShadow: '-1px 0px 1px 0px rgba(33,150,243,1)'})
+        return merge(sider, {boxShadow: '-2px 0px 5px 0px rgba(0,0,0,0.26)'})
       default: throw 'Not supported'
     }
   },

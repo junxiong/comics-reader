@@ -11,6 +11,24 @@ export function pushState(route) {
   }
 }
 
+export const ENTER_FULLSCREEN = 'ENTER_FULL_SCREEN'
+export const EXIT_FULLSCREEN = 'EXIT_FULL_SCREEN'
+export function enterFullscreen() {
+  return {type: ENTER_FULLSCREEN}
+}
+export function exitFullscreen() {
+  return {type: EXIT_FULLSCREEN}
+}
+
+export const SHOW_SIDER = 'SHOW_SIDER'
+export const HIDE_SIDER = 'HIDE_SIDER'
+export function showSider() {
+  return {type: SHOW_SIDER}
+}
+export function hideSider() {
+  return {type: HIDE_SIDER}
+}
+
 export const LOAD_BOOK_SHELF_REQUEST = 'LOAD_BOOK_SHELF_REQUEST'
 export const LOAD_BOOK_SHELF_SUCCESS = 'LOAD_BOOK_SHELF_SUCCESS'
 export const LOAD_BOOK_SHELF_FAILURE = 'LOAD_BOOK_SHELF_FAILURE'

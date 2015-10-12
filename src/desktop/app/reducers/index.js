@@ -41,6 +41,10 @@ import {combineReducers} from 'redux'
 
 import {
   PUSH_STATE,
+  SHOW_SIDER,
+  HIDE_SIDER,
+  ENTER_FULLSCREEN,
+  EXIT_FULLSCREEN,
   READING_SUCCESS,
   READING_FAILURE,
   LOAD_BOOK_SHELF_REQUEST,
@@ -133,4 +137,22 @@ export function reading(state = {
   }
 }
 
-export default combineReducers({route, bookshelf, library, comic, reading})
+export function sider(state = false, action) {
+  let {type} = action
+  switch(type) {
+    case SHOW_SIDER: return true
+    case HIDE_SIDER: return false
+    default: return state
+  }
+}
+
+export function fullscreen(state = false, action) {
+  let {type} = action
+  switch(type) {
+    case ENTER_FULLSCREEN: return true
+    case EXIT_FULLSCREEN: return false
+    default: return state
+  }
+}
+
+export default combineReducers({route, bookshelf, library, comic, reading, sider, fullscreen})
