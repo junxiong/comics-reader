@@ -1,6 +1,6 @@
 import {merge, append, fileter, propEq, isNil, find, findIndex, length, head, nth} from 'ramda'
 
-import {Comic} from '../../../common/isomorphic/stores'
+import {Comic, History} from '../../../common/isomorphic/stores'
 import * as remote from '../../../common/isomorphic/loader/comic'
 
 export const PUSH_STATE = 'PUSH_STATE'
@@ -79,6 +79,7 @@ export function searchComics(query) {
 
 export const READING_SUCCESS = 'READING_SUCCESS'
 export const READING_FAILURE = 'READING_FAILURE'
+
 export function read(target) {
   let action = {type: READING_SUCCESS}
   return (dispatch, getState) => {
@@ -96,17 +97,37 @@ export function read(target) {
         let nextVolumnNo = volumnNo + 1
         if (nextVolumnNo >= volumns.length) {
           let nextPartNo = partNo + 1
-          if (nextPartNo >= parts.length) return dispatch(merge(action, {type: READING_FAILURE, error: 'Last screen'}))
-          else return dispatch(merge(action, {data: {partNo: nextPartNo, volumnNo: 0, screenNo: 0}}))
-        } else return dispatch(merge(action, {data: {partNo, volumnNo: nextVolumnNo, screenNo: 0}})) // to next volumn
-      } else return dispatch(merge(action, {data: {partNo, volumnNo, screenNo}})) // to target screen
+          if (nextPartNo >= parts.length) {
+            return dispatch(merge(action, {type: READING_FAILURE, error: 'Last screen'}))
+          }
+          else {
+            let data = {partNo: nextPartNo, volumnNo: 0, screenNo: 0}
+            //History.insert(data).catch(error => console.log(error)) // TODO add an action for this
+            return dispatch(merge(action, {data}))
+          }
+        } else {
+          let data = {partNo, volumnNo: nextVolumnNo, screenNo: 0}
+          return dispatch(merge(action, {data})) // to next volumn
+        }
+      } else {
+        let data = {partNo, volumnNo, screenNo}
+        return dispatch(merge(action, {data})) // to target screen
+      }
     } else {
       let preVolumnNo = volumnNo - 1
       if (preVolumnNo < 0) {
         let prePartNo = partNo - 1
-        if (prePartNo < 0) return dispatch(merge(action, {type: READING_FAILURE, error: 'First screen'}))
-        else return dispatch(merge(action, {data: {partNo: prePartNo, volumnNo: 0, screenNo: 0}}))
-      } else return dispatch(merge(action, {data: {partNo, volumnNo: preVolumnNo, screenNo: 0}})) // to pre volumn
+        if (prePartNo < 0) {
+          return dispatch(merge(action, {type: READING_FAILURE, error: 'First screen'}))
+        }
+        else {
+          let data = {partNo: prePartNo, volumnNo: 0, screenNo: 0}
+          return dispatch(merge(action, {data}))
+        }
+      } else {
+        let data = {partNo, volumnNo: preVolumnNo, screenNo: 0}
+        return dispatch(merge(action, {data})) // to pre volumn
+      }
     }
   }
 }
