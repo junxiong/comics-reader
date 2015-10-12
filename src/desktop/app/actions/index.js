@@ -1,4 +1,4 @@
-import {merge, append, fileter, propEq, isNil, find, findIndex, length, head} from 'ramda'
+import {merge, append, fileter, propEq, isNil, find, findIndex, length, head, nth} from 'ramda'
 
 import {Comic} from '../../../common/isomorphic/stores'
 import * as remote from '../../../common/isomorphic/loader/comic'
@@ -79,11 +79,13 @@ export function searchComics(query) {
 
 export const READING_SUCCESS = 'READING_SUCCESS'
 export const READING_FAILURE = 'READING_FAILURE'
-export function read(screenNo) {
+export function read(target) {
   let action = {type: READING_SUCCESS}
   return (dispatch, getState) => {
     let {comic, reading} = getState()
-    let {partNo, volumnNo} = reading
+    let partNo = isNil(target.partNo) ? reading.partNo : target.partNo
+    let volumnNo = isNil(target.volumnNo) ? reading.volumnNo : target.volumnNo
+    let screenNo = isNil(target.screenNo) ? reading.screenNo : target.screenNo
     let {parts} = comic.data
     let currentPart = parts[partNo]
     let {volumns} = currentPart
@@ -108,18 +110,26 @@ export function read(screenNo) {
     }
   }
 }
-
 export function readNext() {
   return (dispatch, getState) => {
     let {screenNo} = getState().reading
-    return dispatch(read(screenNo + 1))
+    return dispatch(read({screenNo: screenNo + 1}))
   }
 }
-
 export function readPrevious() {
   return (dispatch, getState) => {
     let {screenNo} = getState().reading
-    return dispatch(read(screenNo - 1))
+    return dispatch(read({screenNo: screenNo - 1}))
+  }
+}
+export function readVolumn({p, v}) {
+  return (dispatch, getState) => {
+    let {parts} = getState().comic.data
+    let partNo = findIndex(propEq('title', p), parts)
+    let {volumns} = nth(partNo, parts)
+    let volumnNo = findIndex(propEq('title', v), volumns)
+    let screenNo = 0
+    return dispatch(read({partNo, volumnNo, screenNo}))
   }
 }
 

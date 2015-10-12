@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Radium from 'radium'
 import {isNil} from 'ramda'
 
-import {pushState, fetchComic, loadComic, showSider, hideSider} from '../actions'
+import {pushState, fetchComic, loadComic, showSider, hideSider, readVolumn} from '../actions'
 import Header from '../components/header'
 import Bookshelf from './book-shelf'
 import Booklibrary from './book-library'
@@ -38,12 +38,16 @@ export default class Main extends Component {
     let handleShowSider = evt => dispatch(showSider())
     let handleHideSider = evt => dispatch(hideSider())
     let isReading = route === 'nowreading' && !isNil(comic)
-    let showSiderIcon = isReading ? <img src='images/ic_reorder_white_48dp_1x.png' onClick={handleShowSider.bind(this)}/> : null
-    let hideSiderIcon = <img src='images/ic_reorder_white_48dp_1x.png' onClick={handleHideSider.bind(this)}/>
+    let showSiderIcon = isReading ? <img style={{cursor: 'pointer'}} src='images/ic_reorder_white_48dp_1x.png' onClick={handleShowSider.bind(this)}/> : null
+    let hideSiderIcon = <img style={{cursor: 'pointer'}} src='images/ic_reorder_white_48dp_1x.png' onClick={handleHideSider.bind(this)}/>
+    let handleViewVolumn = target => {
+      dispatch(readVolumn(target))
+      dispatch(hideSider())
+    }
     return (
       <div>
         {isReading && sider &&
-          <Sider comic={comic} reading={reading} icon={hideSiderIcon}/>
+          <Sider comic={comic} reading={reading} icon={hideSiderIcon} onViewVolumn={handleViewVolumn}/>
         }
         <div>
           <Header route={route} items={items} onItemClick={handleItemClick} icon={showSiderIcon}/>

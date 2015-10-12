@@ -3,14 +3,14 @@ import {compose, map, isEmpty, filter, complement} from 'ramda'
 import Radium, {Style} from 'radium'
 
 import Image from '../../../common/web/components/image'
-import {matrixfy} from '../../../common/isomorphic/utils'
+import {matrixfy, Seq} from '../../../common/isomorphic/utils'
 import {grid, cell, gutters, cellGutters, u1of6} from '../styles/grid'
 
 @Radium
 export default class Comics extends Component {
 
   render() {
-    let seq = new Seq()
+    let next = Seq()
     let {comics, onReadingComic} = this.props
     let renderComic = comic => {
       return <ComicItem
@@ -19,7 +19,7 @@ export default class Comics extends Component {
         onReadingComic={onReadingComic}/>
     }
     let renderColumn = column => (
-      <div key={seq.next()} style={[cell, cellGutters]}>
+      <div key={next()} style={[cell, cellGutters]}>
         {map(renderComic, column)}
       </div>
     )
@@ -50,15 +50,6 @@ export default class Comics extends Component {
   }
 }
 
-class Seq {
-  i = 0
-
-  next() {
-    this.i = this.i + 1
-    return this.i
-  }
-}
-
 @Radium
 class ComicItem extends Component {
 
@@ -84,6 +75,7 @@ let styles = {
   },
   comic: {
     item: {
+      cursor: 'pointer',
       borderRadius: 10,
       backgroundColor: '#FF5722',
       ':hover': {

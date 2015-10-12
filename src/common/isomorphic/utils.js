@@ -10,6 +10,14 @@ import {
   range
 } from 'ramda'
 
+export let Seq = (initial = 0) => {
+  let i = initial
+  return (step = 1) => {
+    i = i + step
+    return i
+  }
+}
+
 export let matrixfy = cols => list => {
   let delta = cols - (length(list) % cols)
   let toEmpty = n => []

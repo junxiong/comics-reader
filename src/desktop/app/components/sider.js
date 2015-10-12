@@ -2,7 +2,7 @@ import {Component} from 'react'
 import Radium from 'radium'
 import {map, nth, merge, flatten, compose, filter, complement, isEmpty} from 'ramda'
 
-import {matrixfy} from '../../../common/isomorphic/utils'
+import {matrixfy, Seq} from '../../../common/isomorphic/utils'
 import Image from '../../../common/web/components/image'
 import {grid, center, cell, gutters, cellGutters, u1of3, u1of6, wrap} from '../styles/grid'
 
@@ -10,6 +10,7 @@ import {grid, center, cell, gutters, cellGutters, u1of3, u1of6, wrap} from '../s
 export default class Sider extends Component {
 
   render() {
+    let {onViewVolumn} = this.props
     let {id, code, title, coverImage, author, description, parts} = this.props.comic
     let {partNo, volumnNo, screenNo} = this.props.reading
     let currentPart = nth(partNo, parts)
@@ -20,17 +21,10 @@ export default class Sider extends Component {
       let v = volumn.title
       return {p, v}
     }, part.volumns) ,parts))
-    let Seq = () => {
-      let i = 0
-      return () => {
-        i = i + 1
-        return i
-      }
-    }
     let renderTitle = ({p, v}) => (
-      <div key={p+v} style={[styles.volumn,
+      <div key={p+v} onClick={onViewVolumn && onViewVolumn.bind(this, {p, v})} style={[styles.volumn,
         v === currentVolumn.title && p ===currentPart.title && styles.active]}>
-        <p>{p+v}</p>
+        {p+v}
       </div>
     )
     let next = Seq()
@@ -97,11 +91,21 @@ let styles = {
     }
   },
   volumn: {
+    cursor: 'pointer',
     backgroundColor: '#FF5722',
-    fontSize: 16,
-    textAlign: 'center'
+    fontSize: 12,
+    height: 18,
+    paddingTop: 5,
+    borderRadius: 18,
+    margin: 5,
+    textAlign: 'center',
+    boxShadow: '1px 1px 10px 0px rgba(0,0,0,0.5)',
+    ':hover': {
+      boxShadow: '1px 1px 10px 0px #2196F3'
+    }
   },
   active: {
+    cursor: 'none',
     backgroundColor: '#2196F3'
   },
   comic: {
