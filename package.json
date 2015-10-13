@@ -4,7 +4,8 @@
   "description": "Comics reader server application",
   "main": "src/desktop/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "npm run desktop",
+    "worksheet": "node src/worksheet/index.js",
     "desktop": "electron .",
     "test": "mocha test/**/*.spec.js"
   },

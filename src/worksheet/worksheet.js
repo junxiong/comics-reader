@@ -1,8 +1,8 @@
 //Uncoment below to test loader and stores
 import {length, head} from 'ramda'
 
-import {fetchComic, searchComic} from './common/isomorphic/loader/comic'
-import {Comic, History} from './common/isomorphic/stores'
+import {fetchComic, searchComic} from '../common/isomorphic/loader/comic'
+import {Comic, History} from '../common/isomorphic/stores'
 
 // let findComic = code => Comic.find({code}).then(comics => {
 //   if (length(comics) > 0) return head(comics)
