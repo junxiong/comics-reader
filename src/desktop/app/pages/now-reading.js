@@ -41,7 +41,9 @@ export default class NowReading extends Component {
     const KEY_RIGHT = 39
     const KEY_ESC = 27
     const KEY_PLUS = 107
+    const KEY_PLUS_MICRO = 187
     const KEY_MINUS = 109
+    const KEY_MINUS_MICRO = 189
     let {dispatch} = this.props
     switch(evt.keyCode) {
       case KEY_LEFT:
@@ -54,10 +56,12 @@ export default class NowReading extends Component {
         dispatch(exitFullscreen())
         break
       case KEY_PLUS:
+      case KEY_PLUS_MICRO:
         if (evt.ctrlKey) dispatch(enterFullscreen())
         else dispatch(zoomIn(STEP))
         break
       case KEY_MINUS:
+      case KEY_MINUS_MICRO:
         dispatch(zoomOut(STEP))
         break
     }
