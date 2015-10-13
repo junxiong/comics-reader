@@ -1,4 +1,4 @@
-import {merge, append, fileter, propEq, isNil, find, findIndex, length, head, nth} from 'ramda'
+import {merge, append, fileter, propEq, isNil, find, findIndex, length, head, nth, isEmpty} from 'ramda'
 
 import {Comic, History} from '../../../common/isomorphic/stores'
 import * as remote from '../../../common/isomorphic/loader/comic'
@@ -79,7 +79,16 @@ export function searchComics(query) {
 
 export const READING_SUCCESS = 'READING_SUCCESS'
 export const READING_FAILURE = 'READING_FAILURE'
-
+let recordReadingHistory = (comicId, history) => {
+  History.find({comicId})
+    .then(histories => {
+      if (!isEmpty(histories)) return History.update(merge(head(histories), history))
+      else return History.insert(merge(history, {comicId}))
+    })
+    .catch(error => {
+      console.log(error)
+    })
+}
 export function read(target) {
   let action = {type: READING_SUCCESS}
   return (dispatch, getState) => {
@@ -87,7 +96,7 @@ export function read(target) {
     let partNo = isNil(target.partNo) ? reading.partNo : target.partNo
     let volumnNo = isNil(target.volumnNo) ? reading.volumnNo : target.volumnNo
     let screenNo = isNil(target.screenNo) ? reading.screenNo : target.screenNo
-    let {parts} = comic.data
+    let {id, parts} = comic.data
     let currentPart = parts[partNo]
     let {volumns} = currentPart
     let currentVolumn = volumns[volumnNo]
@@ -102,15 +111,17 @@ export function read(target) {
           }
           else {
             let data = {partNo: nextPartNo, volumnNo: 0, screenNo: 0}
-            //History.insert(data).catch(error => console.log(error)) // TODO add an action for this
+            recordReadingHistory(id, data) // TODO add an action for this
             return dispatch(merge(action, {data}))
           }
         } else {
           let data = {partNo, volumnNo: nextVolumnNo, screenNo: 0}
+          recordReadingHistory(id, data)
           return dispatch(merge(action, {data})) // to next volumn
         }
       } else {
         let data = {partNo, volumnNo, screenNo}
+        recordReadingHistory(id, data)
         return dispatch(merge(action, {data})) // to target screen
       }
     } else {
@@ -122,10 +133,12 @@ export function read(target) {
         }
         else {
           let data = {partNo: prePartNo, volumnNo: 0, screenNo: 0}
+          recordReadingHistory(id, data)
           return dispatch(merge(action, {data}))
         }
       } else {
         let data = {partNo, volumnNo: preVolumnNo, screenNo: 0}
+        recordReadingHistory(id, data)
         return dispatch(merge(action, {data})) // to pre volumn
       }
     }
@@ -153,6 +166,21 @@ export function readVolumn({p, v}) {
     return dispatch(read({partNo, volumnNo, screenNo}))
   }
 }
+export function readHistory(comicId) {
+  return dispatch => {
+    let history = {partNo: 0, volumnNo: 0, screenNo: 0}
+    History.find({comicId})
+      .then(histories => {
+        if (!isEmpty(histories)) return merge(history, head(histories))
+        else return history
+      })
+      .then(h => dispatch(read(h)))
+      .catch(error => {
+        console.log(error)
+        dispatch(read(history))
+      })
+  }
+}
 
 export const FETCH_COMIC_REQUEST = 'FETCH_COMIC_REQUEST'
 export const FETCH_COMIC_SUCCESS = 'FETCH_COMIC_SUCCESS'
@@ -171,6 +199,7 @@ export function fetchComic(code) {
       })
         .then(data => {
           dispatch({data, type: FETCH_COMIC_SUCCESS})
+          dispatch(readHistory(data.id))
         })
         .catch(error => {
           dispatch({type: FETCH_COMIC_FAILURE})
@@ -203,6 +232,7 @@ export function loadComic(id) {
     return Comic.findOne(id)
       .then(data => {
         dispatch({data, type: LOAD_COMIC_SUCCESS})
+        dispatch(readHistory(data.id))
       })
       .catch(error => {
         dispatch({type: LOAD_COMIC_FAILURE})

@@ -55,7 +55,7 @@ export default function Store(name) {
       return new Promise((resolve, reject) => {
         let {id} = model
         let query = {_id: id}
-        store.update(query, model, {}, (error, numReplaced) => {
+        store.update(query, fine(model), {}, (error, numReplaced) => {
           if (error) reject(error)
           else if (numReplaced === 0) return model
           else store.findOne(query, (error, doc) => {
